@@ -1,5 +1,5 @@
 const Category = require("../model/category")
-
+const subcat = require("../model/subcat")
 
   exports.createCategory = 
   (req, res) =>
@@ -44,11 +44,30 @@ const Category = require("../model/category")
     });
   };
   
+  exports.getCategoryBySubId = (req, res, next, id) => {
+    Category.find({ subcat : req.params.subcatId })
+    .exec(function (err, category) {
+      if (err){
+        if(err.kind === 'ObjectId') {
+          return res.status(404).send({
+            message: "Category not found with given subcategory Id " + req.params.subcatId
+          });                
+        }
+        return res.status(500).send({
+          message: "Error retrieving Category with given subcategory Id " + req.params.subcatId
+        });
+      }
+            
+      res.send(category);
+    });
+  };
   
   exports.getCategory = (req, res) => {
     return res.json(req.category);
   };
-  
+  exports.getSCategory = (req, res) => {
+    return res.json(req.category);
+  };
   exports.getAllCategory =
    (req, res) => 
   {

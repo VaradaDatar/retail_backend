@@ -1,5 +1,5 @@
 
-const User = require("../model/seller");
+const Seller = require("../model/seller");
 const { check, validationResult } = require("express-validator");
 var jwt = require("jsonwebtoken");
 var expressJwt = require("express-jwt");
@@ -13,52 +13,39 @@ exports.register = (req, res) => {
       });
     }
   
-    const user = new User(req.body);
-    user.save((err, user) => {
+    const seller = new Seller(req.body);
+    seller.save((err, seller) => {
       if (err) {
         return res.status(400).json({
-          err: "NOT able to save user in DB"
+          err: "NOT able to save seller in DB"
         });
       }
       res.json({
-        name: user.name,
-        email: user.email,
-        id: user._id
+        gst: seller.GST,
+        email: seller.email,
+        id: seller._id
       });
     });
   };
   
 
   exports.login = (req, res) => {
-    // const errors = validationResult(req);
+  
      const { email, password } = req.body;
    
-   //   if (!errors.isEmpty()) {
-   //     return res.status(422).json({
-   //       error: errors.array()[0].msg
-   //     });
-   //   }
-   
-     User.findOne({ email }, (err, user) => {
-       if (err || !user) {
+     Seller.findOne({ email }, (err, seller) => {
+       if (err || !seller) {
          return res.status(400).json({
-           error: "USER email does not exists"
+           error: "seller email does not exists"
          });
        }
    
-       if (!user.autheticate(password)) {
+       if (!seller.autheticate(password)) {
          return res.status(401).json({
            error: "Email and password do not match"
          });
        }
-   
-       // //create token
-       // const token = jwt.sign({ _id: user._id }, process.env.SECRET);
-       // //put token in cookie
-       // res.cookie("token", token, { expire: new Date() + 9999 });
-   
-       //send response to front end
-       const { _id, name, email } = user;
-       return res.json({  user: { _id, name, email } });
+       const { _id, name, email } = seller;
+       return res.json({  seller: { _id, name, email } });
      });
    }

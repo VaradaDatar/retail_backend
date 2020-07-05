@@ -1,12 +1,29 @@
-const Product = require("../model/product")
+const  Product= require("../model/product");
+const  Category= require("../model/category");
+const formidable = require("formidable");
+const _ = require("lodash");
+const fs = require("fs");
+var multer  = require('multer');
 
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads')
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+    cb(null, file.fieldname + '-' + uniqueSuffix)
+  }
+})
 
-  exports.createProduct = 
+var upload = multer({ storage: storage })
+
+exports.createProduct = 
   (req, res) =>
    {
-   
     const product = new Product(req.body);
-   
+    
+    product.productImagePath = req.file.path;
+
     product.save((err, product) => 
     {
       if (err) 
@@ -39,13 +56,33 @@ const Product = require("../model/product")
           error: "Product not found in DB"
         });
       }
-      req.product = cate;
+      req.product = product;
       next();
     });
   };
   
+  exports.getProductByCategoryId = (req, res, next, id) => {
+    Product.find({ category : req.params.categoryId })
+    .exec(function (err, product) {
+      if (err){
+        if(err.kind === 'ObjectId') {
+          return res.status(404).send({
+            message: "Products not found with given category Id " + req.params.categoryId
+          });                
+        }
+        return res.status(500).send({
+          message: "Error retrieving Products with given category Id " + req.params.categoryId
+        });
+      }
+            
+      res.send(product);
+    });
+  };
   
   exports.getProduct = (req, res) => {
+    return res.json(req.product);
+  };
+  exports.getCProduct = (req, res) => {
     return res.json(req.product);
   };
   
@@ -55,7 +92,7 @@ const Product = require("../model/product")
     Product.find().exec((err, product) => {
       if (err) {
         return res.status(400).json({
-          error: "NO categories found"
+          error: "NO products found"
         });
       }
       res.json(product);
@@ -90,7 +127,7 @@ const Product = require("../model/product")
         });
       }
       res.json({
-        message: "Successfull deleted"
+        message: "Successfully deleted"
       });
     });
   };

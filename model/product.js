@@ -23,7 +23,7 @@ const productSchema = new mongoose.Schema(
     },
     category: {
       type: ObjectId,
-      ref: "Category",
+      ref: "category",
       required: true
     },
     stock: {
@@ -33,9 +33,12 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0
     },
-    photo: {
-      data: Buffer,
-      contentType: String
+    // photo: {
+    //   data: Buffer,
+    //   contentType: String
+    // },
+    productImagePath :{
+      type:String
     }
   },
   { timestamps: true }

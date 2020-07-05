@@ -2,7 +2,8 @@
 var express = require("express");
 var router = express.Router();
 const { check } = require("express-validator");
-const { signup,signin } = require("../controller/auth");
+const { signup,signin, updateUser,
+  removeUser,getUserById,getUser,getAllUser} = require("../controller/auth");
 
 router.post(
   "/signup",
@@ -23,7 +24,20 @@ router.post(
   ],
   signin
 );
+router.param("userId", getUserById);
+router.get("/user/:userId", getUser);
+router.get("/users", getAllUser);
+router.put(
+  "/user/:userId",
+ 
+  updateUser
+);
 
+router.delete(
+  "/user/:userId",
+
+  removeUser
+);
 //router.get("/signout", signout);
 
 module.exports = router;

@@ -2,7 +2,7 @@
 const User = require("../model/user");
 const { check, validationResult } = require("express-validator");
 var jwt = require("jsonwebtoken");
-var expressJwt = require("express-jwt");
+var expressJwt = require("express-jwt"); 
 
 exports.signup = (req, res) => {
     const errors = validationResult(req);
@@ -21,7 +21,7 @@ exports.signup = (req, res) => {
         });
       }
       res.json({
-        name: user.name,
+        fullName: user.fullName,
         email: user.email,
         id: user._id
       });
@@ -52,13 +52,74 @@ exports.signup = (req, res) => {
          });
        }
    
-       // //create token
-       // const token = jwt.sign({ _id: user._id }, process.env.SECRET);
-       // //put token in cookie
-       // res.cookie("token", token, { expire: new Date() + 9999 });
-   
-       //send response to front end
-       const { _id, name, email } = user;
-       return res.json({  user: { _id, name, email } });
+       
+       const { _id,fullName,email,contact,purchases } = user;
+       return res.json({  user: { _id,fullName,email,contact,purchases } });
      });
    }
+   exports.getUserById = (req, res, next, id) => {
+    User.findById(id).exec((err, use) => {
+      if (err) {
+        return res.status(400).json({
+          error: "User not found in DB"
+        });
+      }
+      req.user = use;
+      next();
+    });
+  };
+  
+  
+  exports.getUser = (req, res) => {
+    return res.json(req.user);
+  };
+  
+  exports.getAllUser =
+   (req, res) => 
+  {
+    User.find().exec((err, users) => {
+      if (err) {
+        return res.status(400).json({
+          error: "NO User found"
+        });
+      }
+      res.json(users);
+    });
+  };
+  
+   exports.updateUser = (req, res) => {
+    
+    const user = req.user;
+   
+   // user.fullName = req.body.fullName;
+    user.email = req.body.email;
+    user.contact = req.body.contact;
+    user.password = req.body.password;
+  
+    user.save((err, updatedUser) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Failed to update user"
+        });
+      }
+      res.json(updatedUser);
+    });
+  };
+
+  exports.removeUser = (req, res) => {
+   
+   
+    const user = req.user;
+  
+    user.remove((err, user) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Failed to delete this user"
+        });
+      }
+      res.json({
+        message: "Successfully deleted"
+      });
+    });
+  };
+  

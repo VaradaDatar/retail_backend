@@ -8,10 +8,10 @@ const { register,login } = require("../controller/s_auth");
 router.post(
   "/register",
   [
-    check("fullName", "name should be at least 3 char").isLength({ min: 3 }),
+    // check("GST", "GST no. should be at least 4 char").isLength({ min: 0 }),
     check("email", "email is required").isEmail(),
-    check("contact", "contact no. is required").isMobilePhone(),
-    check("ShopName", "name should be at least 3 char").isLength({ min: 3 }),
+    // check("contact", "contact no. is required"),
+    // check("ShopName", "name should be at least 3 char").isLength({ min: 3 }),
     check("password", "password should be at least 3 char").isLength({ min: 3 })
   ],
   register

@@ -3,13 +3,16 @@ const express = require('express')
 const router = express.Router();
 
 const {getCategoryById,
+  getCategoryBySubId,
   createCategory,
   getCategory,
+  getSCategory,
   getAllCategory,
   updateCategory,
   removeCategory} = require("../controller/category");
 
 router.param("categoryId", getCategoryById);
+router.param("subcatId", getCategoryBySubId);
 
 router.post(
   "/category/create/",
@@ -18,6 +21,7 @@ router.post(
 );
 
 router.get("/category/:categoryId", getCategory);
+router.get("/category/sub/:subcatId", getSCategory);
 router.get("/categories", getAllCategory);
 
 //update

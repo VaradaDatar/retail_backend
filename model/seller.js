@@ -4,14 +4,13 @@ const uuidv1 = require("uuid/v1");
 
 var sellerSchema = new mongoose.Schema(
   {
-    fullName: {
+    GST: {
       type: String,
       required: true,
-      maxlength: 32,
+      unique: true,
       trim: true
     },
-    
-    email: {
+    ShopName: {
       type: String,
       trim: true,
       required: true,
@@ -22,12 +21,12 @@ var sellerSchema = new mongoose.Schema(
       trim: true,
       unique: true
     },
-    ShopName: {
-        type: String,
-        trim: true,
-        required: true,
-        unique: true
-      },
+    email: {
+      type: String,
+      trim: true,
+      required: true,
+      unique: true
+    },
     password: {
       type: String,
       required: true
